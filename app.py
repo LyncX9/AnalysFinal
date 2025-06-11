@@ -1,10 +1,11 @@
 import streamlit as st
 import nbformat
 import base64
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-# -------------------------------
-# Fungsi untuk membaca output notebook
-# -------------------------------
 def load_notebook_outputs(nb_path):
     try:
         with open(nb_path, "r", encoding="utf-8") as f:
@@ -30,9 +31,6 @@ def load_notebook_outputs(nb_path):
         st.error(f"Gagal membaca notebook: {e}")
         return []
 
-# -------------------------------
-# Fungsi untuk menampilkan output dengan styling gelap
-# -------------------------------
 def display_outputs(outputs):
     for tipe, content in outputs:
         if tipe == 'text':
@@ -58,9 +56,6 @@ def display_outputs(outputs):
         elif tipe == 'image':
             st.image(content, use_column_width=True)
 
-# -------------------------------
-# Dummy Sentiment Prediction
-# -------------------------------
 def predict_sentiment(text):
     if not text.strip():
         return "Netral", 0.0
@@ -71,9 +66,7 @@ def predict_sentiment(text):
     else:
         return "Netral", 60.0
 
-# -------------------------------
-# Streamlit UI
-# -------------------------------
+
 st.set_page_config(page_title="Visualisasi + Sentimen", layout="wide")
 st.markdown("<h1 style='color:#00f7ff;'>📘 Visualisasi Analisis & Sentimen Komentar YouTube</h1>", unsafe_allow_html=True)
 
@@ -94,3 +87,16 @@ if st.button("Prediksi Sentimen"):
     hasil, confidence = predict_sentiment(user_input)
     st.success(f"**Hasil Sentimen:** {hasil}")
     st.info(f"**Tingkat Keyakinan:** {confidence:.2f}%")
+
+
+st.markdown("---")
+st.subheader("📉 Confusion Matrix (Evaluasi Model)")
+
+y_true = ['Negatif', 'Netral', 'Positif', 'Netral', 'Positif', 'Negatif', 'Positif', 'Netral']
+y_pred = ['Negatif', 'Netral', 'Positif', 'Negatif', 'Positif', 'Negatif', 'Netral', 'Netral']
+
+labels = ['Negatif', 'Netral', 'Positif']
+cm = confusion_matrix(y_true, y_pred, labels=labels)
+
+fig, ax = plt.subplots(figsize=(6, 5))
+sns.heatmap(cm, annot=True,
