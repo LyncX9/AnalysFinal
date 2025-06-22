@@ -6,3 +6,4 @@ Sastrawi
 gradio
 matplotlib
 pandas
+seaborn
