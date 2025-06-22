@@ -88,7 +88,6 @@ if st.button("Prediksi Sentimen"):
     st.success(f"**Hasil Sentimen:** {hasil}")
     st.info(f"**Tingkat Keyakinan:** {confidence:.2f}%")
 
-
 st.markdown("---")
 st.subheader("📉 Confusion Matrix (Evaluasi Model)")
 
@@ -99,4 +98,9 @@ labels = ['Negatif', 'Netral', 'Positif']
 cm = confusion_matrix(y_true, y_pred, labels=labels)
 
 fig, ax = plt.subplots(figsize=(6, 5))
-sns.heatmap(cm, annot=True,
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels, ax=ax)
+ax.set_xlabel('Predicted Label')
+ax.set_ylabel('True Label')
+ax.set_title('Confusion Matrix')
+
+st.pyplot(fig)
